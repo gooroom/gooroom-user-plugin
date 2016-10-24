@@ -1,0 +1,24 @@
+# Korean translations for gooroom-user-plugin package.
+# Copyright (C) 2016 THE gooroom-user-plugin'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gooroom-user-plugin package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gooroom-user-plugin 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-21 18:43+0900\n"
+"PO-Revision-Date: 2016-09-21 18:43+0900\n"
+"Language-Team: Korean\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../panel-plugin/user-plugin.desktop.in.in.h:1
+msgid "Gooroom User Plugin"
+msgstr "User Action Plugin"
+
+#: ../panel-plugin/user-plugin.desktop.in.in.h:2
+msgid "Log out, lock or other user actions"
+msgstr "Log out, lock or other user actions"

@@ -1,0 +1,3 @@
+panel-plugin/user-plugin.desktop.in.in
+panel-plugin/user-plugin.c
+[type: gettext/glade]panel-plugin/user-window.ui
