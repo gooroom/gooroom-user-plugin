@@ -12,7 +12,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">9</property>
+        <property name="spacing">12</property>
         <child>
           <object class="GtkBox" id="box2">
             <property name="visible">True</property>
@@ -27,10 +27,13 @@
                 <property name="valign">center</property>
                 <child>
                   <object class="GtkImage" id="img-user">
+                    <property name="width_request">48</property>
+                    <property name="height_request">48</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
+                    <property name="pixel_size">48</property>
                     <property name="icon_name">avatar-default-panel</property>
                     <property name="icon_size">6</property>
                   </object>
@@ -96,13 +99,15 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box5">
+          <object class="GtkButtonBox" id="buttonbox1">
+            <property name="name">user-panel-buttonbox</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">9</property>
-            <property name="homogeneous">True</property>
+            <property name="spacing">3</property>
+            <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="btn-settings">
+                <property name="name">user-plugin-action-button</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -111,8 +116,7 @@
                   <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">preferences-desktop</property>
-                    <property name="icon_size">3</property>
+                    <property name="icon_name">settings-panel-symbolic</property>
                   </object>
                 </child>
               </object>
@@ -120,31 +124,13 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="btn-lock-screen">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="relief">none</property>
-                <child>
-                  <object class="GtkImage" id="image2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">system-lock-screen</property>
-                    <property name="icon_size">3</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="secondary">True</property>
+                <property name="non_homogeneous">True</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="btn-switch-user">
+                <property name="name">user-plugin-action-button</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -153,8 +139,29 @@
                   <object class="GtkImage" id="image4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">system-users</property>
-                    <property name="icon_size">3</property>
+                    <property name="icon_name">switch-user-panel-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+                <property name="non_homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn-lock-screen">
+                <property name="name">user-plugin-action-button</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage" id="image2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">screen-lock-panel-symbolic</property>
                   </object>
                 </child>
               </object>
@@ -162,20 +169,21 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
+                <property name="non_homogeneous">True</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="btn-logout">
+                <property name="name">user-plugin-action-button</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
                 <child>
-                  <object class="GtkImage" id="q">
+                  <object class="GtkImage" id="image3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">system-log-out</property>
-                    <property name="icon_size">3</property>
+                    <property name="icon_name">logout-panel-symbolic</property>
                   </object>
                 </child>
               </object>
@@ -183,13 +191,13 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">3</property>
+                <property name="non_homogeneous">True</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="pack_type">end</property>
             <property name="position">2</property>
           </packing>
         </child>

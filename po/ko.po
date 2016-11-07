@@ -17,7 +17,7 @@ msgstr ""
 
 #: ../panel-plugin/user-plugin.desktop.in.in.h:1
 msgid "Gooroom User Plugin"
-msgstr "Gooroom 사용자 Action 플러그인"
+msgstr "사용자 Action 플러그인"
 
 #: ../panel-plugin/user-plugin.desktop.in.in.h:2
 msgid "Log out, lock or other user actions"

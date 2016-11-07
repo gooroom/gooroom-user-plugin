@@ -35,7 +35,7 @@
 
 
 
-#define DEFAULT_USER_IMAGE_SIZE (64)
+#define DEFAULT_USER_IMAGE_SIZE (48)
 
 #define GET_WIDGET(builder, x) GTK_WIDGET (gtk_builder_get_object (builder, x))
 
@@ -59,8 +59,6 @@ struct _UserPlugin
 	ActUser         *user;
 
 	GtkBuilder      *builder;
-
-//	guint            idle_id;
 };
 
 enum {
@@ -116,7 +114,7 @@ get_user_face (const gchar *icon, gint size)
 
 	if (!face) {
 		face = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-				"avatar-default-panel-symbolic",
+				"avatar-default",
 				size, GTK_ICON_LOOKUP_FORCE_SIZE, NULL);
 	}
 
@@ -147,39 +145,6 @@ user_info_update (ActUserManager *um, GParamSpec *pspec, gpointer data)
 	}
 }
 
-#if 0
-static gboolean
-user_image_load (gpointer data)
-{
-	GdkPixbuf *face = NULL;
-	gint plugin_height = -1;
-
-	UserPlugin *plugin = USER_PLUGIN (data);
-
-//	plugin->idle_id = 0;
-
-	plugin_height = xfce_panel_plugin_get_size (XFCE_PANEL_PLUGIN (plugin));
-
-	GtkRequisition requisition;
-	gtk_widget_get_preferred_size (plugin->img_tray, &requisition, NULL);
-
-	if (!act_user_manager_no_service (plugin->um)) {
-		ActUser *user   = NULL;
-		user = act_user_manager_get_user_by_id (plugin->um, getuid ());
-		if (user) {
-			const gchar *icon = act_user_get_icon_file (user);
-//			GdkPixbuf *face = get_user_face (icon, plugin_height);
-			GdkPixbuf *face = get_user_face (icon, 22);
-
-//			gtk_image_set_from_pixbuf (GTK_IMAGE (plugin->img_tray), face);
-//			g_object_unref (face);
-		}
-	}
-
-	return FALSE;
-}
-#endif
-
 static ActionType
 allowed_actions_type_get (void)
 {
@@ -204,18 +169,6 @@ allowed_actions_type_get (void)
 
 	return allow_mask;
 }
-
-#if 0
-static void
-user_image_update (ActUserManager *um, GParamSpec *pspec, gpointer data)
-{
-	UserPlugin *plugin = USER_PLUGIN (data);
-
-	if (plugin->idle_id == 0) {
-		plugin->idle_id = g_timeout_add (100, user_image_load, plugin);
-	}
-}
-#endif
 
 static void
 on_action_button_clicked (GtkButton *button, gpointer data)
@@ -323,9 +276,6 @@ on_user_face_button_clicked (GtkButton *button, gpointer data)
 			}
 		}
 		g_free (filename);
-
-		//update plugin button image
-//		user_image_update (plugin->um, NULL, plugin);
 	}
 
 	g_signal_handlers_unblock_by_func (G_OBJECT (plugin->popup_window), on_popup_window_closed, plugin);
@@ -355,6 +305,12 @@ popup_user_window (UserPlugin *plugin)
 	GtkWidget *btn_user;
 	ActionType allowed_types;
 	gboolean   loaded = FALSE;
+
+#if 1
+	GtkCssProvider  *css_provider;
+	css_provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_data (css_provider, "#user-plugin-action-button { -GtkWidget-focus-padding: 0; -GtkWidget-focus-line-width: 0; -GtkButton-default-border: 0; -GtkButton-inner-border: 0; padding: 6px 3px; border-width: 1px;}", -1, NULL);
+#endif
 
     gtk_builder_add_from_resource (plugin->builder, "/kr/gooroom/user/plugin/user-window.ui", NULL);
 	if (error) {
@@ -394,11 +350,17 @@ popup_user_window (UserPlugin *plugin)
 	for (i = 0; i < G_N_ELEMENTS (action_entries); i++) {
 		GtkWidget *w = GET_WIDGET (plugin->builder, action_entries[i].widget_name);
 		if (w) {
+			gtk_style_context_add_provider (GTK_STYLE_CONTEXT (gtk_widget_get_style_context (w)),
+											GTK_STYLE_PROVIDER (css_provider),
+											GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+			gtk_widget_set_name (w, "user-plugin-action-button");
 			gtk_widget_set_visible (w, allowed_types & action_entries[i].type);
 			g_object_set_data (G_OBJECT (w), "action", GINT_TO_POINTER (i));
 			g_signal_connect (G_OBJECT (w), "clicked", G_CALLBACK (on_action_button_clicked), plugin);
 		}
 	}
+
+	g_object_unref (css_provider);
 
 	g_signal_connect (G_OBJECT (btn_user), "clicked", G_CALLBACK (on_user_face_button_clicked), plugin);
 
@@ -436,9 +398,6 @@ user_plugin_free_data (XfcePanelPlugin *panel_plugin)
 {
 	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
 
-//	if (plugin->idle_id != 0)
-//		g_source_remove (plugin->idle_id);
-
 	if (plugin->builder)
 		g_object_unref (plugin->builder);
 }
@@ -457,12 +416,6 @@ user_plugin_size_changed (XfcePanelPlugin *panel_plugin,
 		gtk_widget_set_size_request (GTK_WIDGET (panel_plugin), size, -1);
 	}
 
-#if 0
-	g_object_get (plugin->um, "is-loaded", &loaded, NULL);
-	if (loaded)
-		user_image_update (plugin->um, NULL, plugin);
-#endif
-
 	return TRUE;
 }
 
@@ -475,7 +428,6 @@ user_plugin_init (UserPlugin *plugin)
 	plugin->button       = NULL;
 	plugin->img_tray     = NULL;
 	plugin->um           = NULL;
-//	plugin->idle_id      = 0;
 
 	g_resources_register (user_window_get_resource ());
 
@@ -494,19 +446,19 @@ user_plugin_construct (XfcePanelPlugin *panel_plugin)
 
 	xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
 
+#if 1
+	GtkCssProvider  *css_provider;
+	css_provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_data (css_provider, "#user-plugin-action-button { -GtkWidget-focus-padding: 0; -GtkWidget-focus-line-width: 0; -GtkButton-default-border: 0; -GtkButton-inner-border: 0; padding: 6px 3px; border-width: 1px;}", -1, NULL);
+	gtk_style_context_add_provider (GTK_STYLE_CONTEXT (gtk_widget_get_style_context (GTK_WIDGET (plugin->button))), GTK_STYLE_PROVIDER (css_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+#endif
+
 	plugin->button = xfce_panel_create_toggle_button ();
 	gtk_widget_set_name (plugin->button, "user-plugin-button");
 	gtk_button_set_relief (GTK_BUTTON (plugin->button), GTK_RELIEF_NONE);
 	gtk_container_add (GTK_CONTAINER (plugin), plugin->button);
 	xfce_panel_plugin_add_action_widget (XFCE_PANEL_PLUGIN (plugin), plugin->button);
 	gtk_widget_show (plugin->button);
-
-#if 0
-	GtkCssProvider  *css_provider;
-	css_provider = gtk_css_provider_new ();
-	gtk_css_provider_load_from_data (css_provider, "#user-plugin-button { -GtkWidget-focus-padding: 0; -GtkWidget-focus-line-width: 0; -GtkButton-default-border: 0; -GtkButton-inner-border: 0; padding: 0; border-width: 1px;}", -1, NULL);
-	gtk_style_context_add_provider (GTK_STYLE_CONTEXT (gtk_widget_get_style_context (GTK_WIDGET (plugin->button))), GTK_STYLE_PROVIDER (css_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-#endif
 
 	plugin->img_tray = gtk_image_new ();
 	gtk_container_add (GTK_CONTAINER (plugin->button), plugin->img_tray);
@@ -516,14 +468,6 @@ user_plugin_construct (XfcePanelPlugin *panel_plugin)
 	gtk_image_set_pixel_size (GTK_IMAGE (plugin->img_tray), 22);
 
 	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);
-
-#if 0
-	g_object_get (plugin->um, "is-loaded", &loaded, NULL);
-	if (loaded)
-		user_image_update (plugin->um, NULL, plugin);
-	else
-		g_signal_connect (plugin->um, "notify::is-loaded", G_CALLBACK (user_image_update), plugin);
-#endif
 }
 
 static void
