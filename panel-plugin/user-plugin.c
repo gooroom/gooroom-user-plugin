@@ -420,6 +420,12 @@ user_plugin_size_changed (XfcePanelPlugin *panel_plugin,
 }
 
 static void
+user_plugin_mode_changed (XfcePanelPlugin *plugin, XfcePanelPluginMode mode)
+{
+	user_plugin_size_changed (plugin, xfce_panel_plugin_get_size (plugin));
+}
+
+static void
 user_plugin_init (UserPlugin *plugin)
 {
 	GError *error        = NULL;
@@ -479,4 +485,5 @@ user_plugin_class_init (UserPluginClass *klass)
 	plugin_class->construct = user_plugin_construct;
 	plugin_class->free_data = user_plugin_free_data;
 	plugin_class->size_changed = user_plugin_size_changed;
+	plugin_class->mode_changed = user_plugin_mode_changed;
 }
