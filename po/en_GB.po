@@ -22,3 +22,36 @@ msgstr "User Action Plugin"
 #: ../panel-plugin/user-plugin.desktop.in.in.h:2
 msgid "Log out, lock or other user actions"
 msgstr "Log out, lock or other user actions"
+
+#: ../panel-plugin/user-plugin.c:87 ../panel-plugin/user-window.ui.h:5
+msgid "System Shutdown"
+msgstr "System Shutdown"
+
+#: ../panel-plugin/user-plugin.c:91 ../panel-plugin/user-window.ui.h:3
+msgid "Switch User"
+msgstr "Switch User"
+
+#: ../panel-plugin/user-plugin.c:95 ../panel-plugin/user-window.ui.h:4
+msgid "Lock Screen"
+msgstr "Lock Screen"
+
+#: ../panel-plugin/user-plugin.c:99 ../panel-plugin/user-window.ui.h:2
+msgid "System Settings"
+msgstr "System Settings"
+
+#: ../panel-plugin/user-plugin.c:208
+#, c-format
+msgid "Failed to run action \"%s\""
+msgstr "Failed to run action \"%s\""
+
+#: ../panel-plugin/user-plugin.c:251
+msgid "_Cancel"
+msgstr "Cancel"
+
+#: ../panel-plugin/user-plugin.c:253
+msgid "_Open"
+msgstr "Open"
+
+#: ../panel-plugin/user-window.ui.h:1
+msgid "Guest"
+msgstr "Guest"

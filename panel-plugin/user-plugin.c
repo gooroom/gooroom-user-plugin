@@ -35,7 +35,7 @@
 
 
 
-#define DEFAULT_USER_IMAGE_SIZE (48)
+#define DEFAULT_USER_IMAGE_SIZE (32)
 
 #define GET_WIDGET(builder, x) GTK_WIDGET (gtk_builder_get_object (builder, x))
 
@@ -69,7 +69,7 @@ enum {
 };
 
 typedef enum {
-	ACTION_TYPE_LOGOUT        = 1 << 1,
+	ACTION_TYPE_SHUTDOWN      = 1 << 1,
 	ACTION_TYPE_SWITCH_USER   = 1 << 2,
 	ACTION_TYPE_LOCK_SCREEN   = 1 << 3,
 	ACTION_TYPE_SETTINGS      = 1 << 4
@@ -82,9 +82,9 @@ typedef struct {
 } ActionEntry;
 
 static ActionEntry action_entries[] = {
-  { ACTION_TYPE_LOGOUT,
-    "btn-logout",
-    N_("Log Out")
+  { ACTION_TYPE_SHUTDOWN,
+    "btn-shutdown",
+    N_("System Shutdown")
   },
   { ACTION_TYPE_SWITCH_USER,
     "btn-switch-user",
@@ -96,7 +96,7 @@ static ActionEntry action_entries[] = {
   },
   { ACTION_TYPE_SETTINGS,
     "btn-settings",
-    N_("Execute Settings")
+    N_("System Settings")
   }
 };
 
@@ -149,7 +149,7 @@ static ActionType
 allowed_actions_type_get (void)
 {
 	gchar      *path;
-	ActionType  allow_mask = ACTION_TYPE_LOGOUT;
+	ActionType  allow_mask = ACTION_TYPE_SHUTDOWN;
 
 	/* check for commands we use */
 	path = g_find_program_in_path ("gdmflexiserver");
@@ -470,7 +470,7 @@ user_plugin_construct (XfcePanelPlugin *panel_plugin)
 	gtk_container_add (GTK_CONTAINER (plugin->button), plugin->img_tray);
 	gtk_widget_show (plugin->img_tray);
 
-	gtk_image_set_from_icon_name (GTK_IMAGE (plugin->img_tray), "avatar-default-panel-symbolic", GTK_ICON_SIZE_BUTTON);
+	gtk_image_set_from_icon_name (GTK_IMAGE (plugin->img_tray), "user-tray", GTK_ICON_SIZE_BUTTON);
 	gtk_image_set_pixel_size (GTK_IMAGE (plugin->img_tray), 22);
 
 	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);

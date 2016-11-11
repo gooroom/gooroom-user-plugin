@@ -3,82 +3,100 @@
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkWindow" id="user-window">
-    <property name="width_request">256</property>
+    <property name="width_request">192</property>
     <property name="can_focus">False</property>
-    <property name="border_width">9</property>
     <property name="resizable">False</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">12</property>
         <child>
-          <object class="GtkBox" id="box2">
+          <object class="GtkFrame" id="frame">
+            <property name="name">panel-popup-window-frame</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">18</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">none</property>
             <child>
-              <object class="GtkButton" id="btn-user">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <child>
-                  <object class="GtkImage" id="img-user">
-                    <property name="width_request">48</property>
-                    <property name="height_request">48</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">avatar-default-panel</property>
-                    <property name="icon_size">6</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="box3">
+              <object class="GtkAlignment" id="alignment1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="border_width">3</property>
-                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkLabel" id="lbl-user">
+                  <object class="GtkBox" id="box2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Guest</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="size" value="12000"/>
-                    </attributes>
+                    <property name="spacing">9</property>
+                    <child>
+                      <object class="GtkButton" id="btn-user">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <child>
+                          <object class="GtkImage" id="img-user">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="icon_name">avatar-default-symbolic</property>
+                            <property name="icon_size">5</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="box3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">True</property>
+                        <property name="border_width">6</property>
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">3</property>
+                        <child>
+                          <object class="GtkLabel" id="lbl-user">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="label" translatable="yes">Guest</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="size" value="11000"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label5">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
           <packing>
@@ -88,23 +106,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSeparator" id="separator1">
+          <object class="GtkBox" id="box5">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButtonBox" id="buttonbox1">
-            <property name="name">user-panel-buttonbox</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">3</property>
-            <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="btn-settings">
                 <property name="name">user-plugin-action-button</property>
@@ -113,10 +119,39 @@
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
                 <child>
-                  <object class="GtkImage" id="image1">
+                  <object class="GtkButtonBox" id="buttonbox2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">settings-panel-symbolic</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkImage" id="image1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">preferences-system-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">System Settings</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -124,8 +159,6 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
-                <property name="secondary">True</property>
-                <property name="non_homogeneous">True</property>
               </packing>
             </child>
             <child>
@@ -136,10 +169,39 @@
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
                 <child>
-                  <object class="GtkImage" id="image4">
+                  <object class="GtkButtonBox" id="buttonbox4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">switch-user-panel-symbolic</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkImage" id="image4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">system-users-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Switch User</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -147,7 +209,6 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
-                <property name="non_homogeneous">True</property>
               </packing>
             </child>
             <child>
@@ -158,10 +219,39 @@
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
                 <child>
-                  <object class="GtkImage" id="image2">
+                  <object class="GtkButtonBox" id="buttonbox3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">screen-lock-panel-symbolic</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkImage" id="image2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">changes-prevent-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Lock Screen</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -169,21 +259,49 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
-                <property name="non_homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="btn-logout">
+              <object class="GtkButton" id="btn-shutdown">
                 <property name="name">user-plugin-action-button</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
                 <child>
-                  <object class="GtkImage" id="image3">
+                  <object class="GtkButtonBox" id="buttonbox1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">logout-panel-symbolic</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkImage" id="image3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">system-shutdown-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">System Shutdown</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -191,14 +309,13 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">3</property>
-                <property name="non_homogeneous">True</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>

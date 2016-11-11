@@ -22,3 +22,36 @@ msgstr "사용자 Action 플러그인"
 #: ../panel-plugin/user-plugin.desktop.in.in.h:2
 msgid "Log out, lock or other user actions"
 msgstr "로그아웃 및 화면잠금 등 사용자 Action 플러그인"
+
+#: ../panel-plugin/user-plugin.c:208
+#, c-format
+msgid "Failed to run action \"%s\""
+msgstr "\"%s\" 명령을 실행할 수 없습니다."
+
+#: ../panel-plugin/user-plugin.c:251
+msgid "_Cancel"
+msgstr "취소"
+
+#: ../panel-plugin/user-plugin.c:253
+msgid "_Open"
+msgstr "열기"
+
+#: ../panel-plugin/user-window.ui.h:1
+msgid "Guest"
+msgstr "손님"
+
+#: ../panel-plugin/user-window.ui.h:2
+msgid "System Settings"
+msgstr "시스템 설정"
+
+#: ../panel-plugin/user-window.ui.h:3
+msgid "Switch User"
+msgstr "사용자 바꾸기"
+
+#: ../panel-plugin/user-window.ui.h:4
+msgid "Lock Screen"
+msgstr "화면 잠금"
+
+#: ../panel-plugin/user-window.ui.h:5
+msgid "System Shutdown"
+msgstr "시스템 종료"
