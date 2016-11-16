@@ -82,21 +82,21 @@ typedef struct {
 } ActionEntry;
 
 static ActionEntry action_entries[] = {
-  { ACTION_TYPE_SHUTDOWN,
-    "btn-shutdown",
-    N_("System Shutdown")
+  { ACTION_TYPE_SETTINGS,
+    "box-settings",
+    N_("System Settings")
   },
   { ACTION_TYPE_SWITCH_USER,
-    "btn-switch-user",
+    "box-switch-user",
     N_("Switch User")
   },
   { ACTION_TYPE_LOCK_SCREEN,
-    "btn-lock-screen",
+    "box-lock-screen",
     N_("Lock Screen")
   },
-  { ACTION_TYPE_SETTINGS,
-    "btn-settings",
-    N_("System Settings")
+  { ACTION_TYPE_SHUTDOWN,
+    "box-shutdown",
+    N_("System Shutdown")
   }
 };
 
@@ -171,31 +171,29 @@ allowed_actions_type_get (void)
 }
 
 static void
-on_action_button_clicked (GtkButton *button, gpointer data)
+on_row_activated (GtkListBox *listbox, GtkListBoxRow *row)
 {
 	GError        *error = NULL;
 	gboolean       succeed = FALSE;
 	gint           action;
 
-	UserPlugin *plugin = USER_PLUGIN (data);
-
-	action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button), "action"));
+	action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "action"));
 
 	switch (action)
 	{
-		case ACTION_LOGOUT:
+		case ACTION_TYPE_SHUTDOWN:
 			succeed = g_spawn_command_line_async ("xfce4-session-logout", &error);
 			break;
 
-		case ACTION_SWITCH_USER:
+		case ACTION_TYPE_SWITCH_USER:
 			succeed = g_spawn_command_line_async ("gdmflexiserver", &error);
 			break;
 
-		case ACTION_LOCK_SCREEN:
+		case ACTION_TYPE_LOCK_SCREEN:
 			succeed = g_spawn_command_line_async ("xflock4", &error);
 			break;
 
-		case ACTION_SETTINGS:
+		case ACTION_TYPE_SETTINGS:
 			succeed = g_spawn_command_line_async ("gooroom-control-center", &error);
 			break;
 
@@ -303,14 +301,9 @@ popup_user_window (UserPlugin *plugin)
 	GdkScreen *screen;
 	GtkWidget *window;
 	GtkWidget *btn_user;
+	GtkWidget *listbox;
 	ActionType allowed_types;
 	gboolean   loaded = FALSE;
-
-#if 1
-	GtkCssProvider  *css_provider;
-	css_provider = gtk_css_provider_new ();
-	gtk_css_provider_load_from_data (css_provider, "#user-plugin-action-button { -GtkWidget-focus-padding: 0; -GtkWidget-focus-line-width: 0; -GtkButton-default-border: 0; -GtkButton-inner-border: 0; padding: 6px 3px; border-width: 1px;}", -1, NULL);
-#endif
 
     gtk_builder_add_from_resource (plugin->builder, "/kr/gooroom/user/plugin/user-window.ui", NULL);
 	if (error) {
@@ -335,6 +328,7 @@ popup_user_window (UserPlugin *plugin)
 	g_signal_connect (G_OBJECT (window), "key-press-event", G_CALLBACK (on_popup_key_press_event), plugin);
 	g_signal_connect_swapped (G_OBJECT (window), "focus-out-event", G_CALLBACK (on_popup_window_closed), plugin);
 
+	listbox = GET_WIDGET (plugin->builder, "listbox");
 	btn_user = GET_WIDGET (plugin->builder, "btn-user");
 	plugin->popup_lbl_user = GET_WIDGET (plugin->builder, "lbl-user");
 	plugin->popup_img_user = GET_WIDGET (plugin->builder, "img-user");
@@ -349,19 +343,16 @@ popup_user_window (UserPlugin *plugin)
 
 	for (i = 0; i < G_N_ELEMENTS (action_entries); i++) {
 		GtkWidget *w = GET_WIDGET (plugin->builder, action_entries[i].widget_name);
-		if (w) {
-			gtk_style_context_add_provider (GTK_STYLE_CONTEXT (gtk_widget_get_style_context (w)),
-											GTK_STYLE_PROVIDER (css_provider),
-											GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-			gtk_widget_set_name (w, "user-plugin-action-button");
-			gtk_widget_set_visible (w, allowed_types & action_entries[i].type);
-			g_object_set_data (G_OBJECT (w), "action", GINT_TO_POINTER (i));
-			g_signal_connect (G_OBJECT (w), "clicked", G_CALLBACK (on_action_button_clicked), plugin);
+		if (w && (allowed_types & action_entries[i].type)) {
+			GtkWidget *row = gtk_list_box_row_new (); 
+			gtk_container_add (GTK_CONTAINER (row), w);
+			gtk_container_add (GTK_CONTAINER (listbox), GTK_WIDGET (row));
+			gtk_widget_show_all (row);
+			g_object_set_data (G_OBJECT (row), "action", GINT_TO_POINTER (action_entries[i].type));
 		}
 	}
 
-	g_object_unref (css_provider);
-
+	g_signal_connect (G_OBJECT (listbox), "row-activated", G_CALLBACK (on_row_activated), NULL);
 	g_signal_connect (G_OBJECT (btn_user), "clicked", G_CALLBACK (on_user_face_button_clicked), plugin);
 
 	xfce_panel_plugin_block_autohide (XFCE_PANEL_PLUGIN (plugin), TRUE);
@@ -451,13 +442,6 @@ user_plugin_construct (XfcePanelPlugin *panel_plugin)
 	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
 
 	xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
-
-#if 1
-	GtkCssProvider  *css_provider;
-	css_provider = gtk_css_provider_new ();
-	gtk_css_provider_load_from_data (css_provider, "#user-plugin-action-button { -GtkWidget-focus-padding: 0; -GtkWidget-focus-line-width: 0; -GtkButton-default-border: 0; -GtkButton-inner-border: 0; padding: 6px 3px; border-width: 1px;}", -1, NULL);
-	gtk_style_context_add_provider (GTK_STYLE_CONTEXT (gtk_widget_get_style_context (GTK_WIDGET (plugin->button))), GTK_STYLE_PROVIDER (css_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-#endif
 
 	plugin->button = xfce_panel_create_toggle_button ();
 	gtk_widget_set_name (plugin->button, "user-plugin-button");
