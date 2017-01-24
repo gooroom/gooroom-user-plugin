@@ -190,43 +190,20 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box3">
+                      <object class="GtkLabel" id="lbl-user">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="valign">center</property>
-                        <property name="hexpand">True</property>
-                        <property name="border_width">6</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">3</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl-user">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Guest</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                              <attribute name="size" value="11000"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label5">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="halign">start</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Guest</property>
+                        <property name="ellipsize">end</property>
+                        <property name="width_chars">16</property>
+                        <property name="single_line_mode">True</property>
+                        <property name="max_width_chars">16</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="size" value="11000"/>
+                        </attributes>
                       </object>
                       <packing>
                         <property name="expand">False</property>
