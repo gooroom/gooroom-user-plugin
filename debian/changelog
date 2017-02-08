@@ -1,5 +1,14 @@
-gooroom-user-plugin (0.1) UNRELEASED; urgency=medium
+gooroom-user-plugin (0.1+grm1) unstable; urgency=medium
 
+  [ cjheo ]
   * Initial Release
+  * [ceaa38f8] Initial commit
+  * [877a2e84] Modify action buttons theme and po file
+  * [944a83f8] Add code for changing panel orientation
+  * [8b07d44d] Change popup window UI/UX
+  * [7ad8ee44] Change popup window UI
+  * [c73e2588] limit user name length
 
- -- cjheo <cjheo@gooroom.kr>  Mon, 24 Oct 2016 22:39:46 +0900
+  [ Gooroom Autobuilder ]
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Wed, 08 Feb 2017 12:14:38 +0900
