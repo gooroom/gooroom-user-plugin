@@ -454,7 +454,7 @@ user_plugin_construct (XfcePanelPlugin *panel_plugin)
 	gtk_container_add (GTK_CONTAINER (plugin->button), plugin->img_tray);
 	gtk_widget_show (plugin->img_tray);
 
-	gtk_image_set_from_icon_name (GTK_IMAGE (plugin->img_tray), "user-tray", GTK_ICON_SIZE_BUTTON);
+	gtk_image_set_from_icon_name (GTK_IMAGE (plugin->img_tray), "user-tray", GTK_ICON_SIZE_MENU);
 	gtk_image_set_pixel_size (GTK_IMAGE (plugin->img_tray), 22);
 
 	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);

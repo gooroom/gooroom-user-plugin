@@ -178,6 +178,7 @@
                           <object class="GtkImage" id="img-user">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="pixel_size">32</property>
                             <property name="icon_name">avatar-default-symbolic</property>
                             <property name="icon_size">5</property>
                           </object>
