@@ -1,4 +1,2 @@
-iconsdir = $(datadir)/icons/hicolor/scalable/apps
-icons_DATA = user-plugin.svg
+SUBDIRS = apps status
 
-EXTRA_DIST = $(icons_DATA)
