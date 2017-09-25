@@ -61,18 +61,10 @@ struct _UserPlugin
 	GtkBuilder      *builder;
 };
 
-enum {
-	ACTION_LOGOUT = 0,
-	ACTION_SWITCH_USER,
-	ACTION_LOCK_SCREEN,
-	ACTION_SETTINGS
-};
-
 typedef enum {
 	ACTION_TYPE_SHUTDOWN      = 1 << 1,
-	ACTION_TYPE_SWITCH_USER   = 1 << 2,
-	ACTION_TYPE_LOCK_SCREEN   = 1 << 3,
-	ACTION_TYPE_SETTINGS      = 1 << 4
+	ACTION_TYPE_LOCK_SCREEN   = 1 << 2,
+	ACTION_TYPE_SETTINGS      = 1 << 3
 } ActionType;
 
 typedef struct {
@@ -82,21 +74,17 @@ typedef struct {
 } ActionEntry;
 
 static ActionEntry action_entries[] = {
-  { ACTION_TYPE_SETTINGS,
-    "box-settings",
-    N_("System Settings")
-  },
-  { ACTION_TYPE_SWITCH_USER,
-    "box-switch-user",
-    N_("Switch User")
+  { ACTION_TYPE_SHUTDOWN,
+    "box-shutdown",
+    N_("System Shutdown")
   },
   { ACTION_TYPE_LOCK_SCREEN,
     "box-lock-screen",
     N_("Lock Screen")
   },
-  { ACTION_TYPE_SHUTDOWN,
-    "box-shutdown",
-    N_("System Shutdown")
+  { ACTION_TYPE_SETTINGS,
+    "box-settings",
+    N_("System Settings")
   }
 };
 
@@ -152,11 +140,6 @@ allowed_actions_type_get (void)
 	ActionType  allow_mask = ACTION_TYPE_SHUTDOWN;
 
 	/* check for commands we use */
-	path = g_find_program_in_path ("gdmflexiserver");
-	if (path != NULL)
-		allow_mask |= ACTION_TYPE_SWITCH_USER;
-	g_free (path);
-
 	path = g_find_program_in_path ("xflock4");
 	if (path != NULL)
 		allow_mask |= ACTION_TYPE_LOCK_SCREEN;
@@ -183,10 +166,6 @@ on_row_activated (GtkListBox *listbox, GtkListBoxRow *row)
 	{
 		case ACTION_TYPE_SHUTDOWN:
 			succeed = g_spawn_command_line_async ("xfce4-session-logout", &error);
-			break;
-
-		case ACTION_TYPE_SWITCH_USER:
-			succeed = g_spawn_command_line_async ("gdmflexiserver", &error);
 			break;
 
 		case ACTION_TYPE_LOCK_SCREEN:
