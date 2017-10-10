@@ -5,5 +5,6 @@ _Name=Gooroom User Plugin
 _Comment=Log out, lock or other user actions
 Icon=user-plugin
 X-XFCE-Module=user-plugin
+X-XFCE-Unique=TRUE
 X-XFCE-Internal=FALSE
 X-XFCE-API=@LIBXFCE4PANEL_VERSION_API@
