@@ -74,17 +74,17 @@ typedef struct {
 } ActionEntry;
 
 static ActionEntry action_entries[] = {
-  { ACTION_TYPE_SHUTDOWN,
-    "box-shutdown",
-    N_("System Shutdown")
+  { ACTION_TYPE_SETTINGS,
+    "box-settings",
+    N_("System Settings")
   },
   { ACTION_TYPE_LOCK_SCREEN,
     "box-lock-screen",
     N_("Lock Screen")
   },
-  { ACTION_TYPE_SETTINGS,
-    "box-settings",
-    N_("System Settings")
+  { ACTION_TYPE_SHUTDOWN,
+    "box-shutdown",
+    N_("System Shutdown")
   }
 };
 
