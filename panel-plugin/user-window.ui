@@ -195,16 +195,12 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Guest</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Guest&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
                     <property name="ellipsize">end</property>
-                    <property name="width_chars">16</property>
                     <property name="single_line_mode">True</property>
-                    <property name="max_width_chars">16</property>
+                    <property name="max_width_chars">32</property>
                     <property name="xalign">0</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="size" value="11000"/>
-                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>

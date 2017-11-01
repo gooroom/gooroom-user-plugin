@@ -128,7 +128,9 @@ user_info_update (ActUserManager *um, GParamSpec *pspec, gpointer data)
 				name = act_user_get_user_name (user);
 			}
 
-			gtk_label_set_text (GTK_LABEL (plugin->popup_lbl_user), name);
+			gchar *markup = g_strdup_printf ("<big><b>%s</b></big>", name);
+			gtk_label_set_markup (GTK_LABEL (plugin->popup_lbl_user), markup);
+			g_free (markup);
 		}
 	}
 }
