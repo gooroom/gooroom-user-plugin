@@ -378,7 +378,6 @@ static gboolean
 user_plugin_size_changed (XfcePanelPlugin *panel_plugin,
                           gint             size)
 {
-	gboolean loaded = FALSE;
 	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
 
 	/* set the clock size */
