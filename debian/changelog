@@ -1,3 +1,20 @@
+gooroom-user-plugin (0.1.1+grm1u1) unstable; urgency=medium
+
+  [ HeoChangJu ]
+  * [e771a565] Modify tray and user's face icon size
+
+  [ cjheo ]
+  * [3f8cca7d] Changed icons and delete unnecessary files
+  * [19641356] Disable switch user menu
+  * [76d4d6cb] Modify desktop file to prevent module from being added redundantly
+  * [34b914b2] Modify user's action oder
+  * [917fde75] Setting to use markup for user's name.
+  * [757a595a] Delete unnecessary variable
+
+  [ Gooroom Autobuilder ]
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Tue, 14 Nov 2017 09:26:06 +0900
+
 gooroom-user-plugin (0.1+grm1) unstable; urgency=medium
 
   [ cjheo ]
