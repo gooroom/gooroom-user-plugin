@@ -365,6 +365,18 @@ on_user_button_pressed (GtkWidget *widget, GdkEventButton *event, gpointer data)
 	return (*GTK_WIDGET_CLASS (user_plugin_parent_class)->button_press_event) (GTK_WIDGET (plugin), event);
 }
 
+static gboolean
+lazy_load_image (gpointer data)
+{
+	UserPlugin *plugin = USER_PLUGIN (data);
+
+	plugin->img_tray = gtk_image_new_from_icon_name ("user-plugin-symbolic", GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_container_add (GTK_CONTAINER (plugin->button), plugin->img_tray);
+	gtk_widget_show (plugin->img_tray);
+
+	return FALSE;
+}
+
 static void
 user_plugin_free_data (XfcePanelPlugin *panel_plugin)
 {
@@ -416,7 +428,6 @@ user_plugin_init (UserPlugin *plugin)
 static void
 user_plugin_construct (XfcePanelPlugin *panel_plugin)
 {
-	GtkWidget *image;
 	gboolean loaded = FALSE;
 
 	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
@@ -424,18 +435,12 @@ user_plugin_construct (XfcePanelPlugin *panel_plugin)
 	xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
 
 	plugin->button = xfce_panel_create_toggle_button ();
-	gtk_widget_set_name (plugin->button, "user-plugin-button");
 	gtk_button_set_relief (GTK_BUTTON (plugin->button), GTK_RELIEF_NONE);
 	gtk_container_add (GTK_CONTAINER (plugin), plugin->button);
 	xfce_panel_plugin_add_action_widget (XFCE_PANEL_PLUGIN (plugin), plugin->button);
 	gtk_widget_show (plugin->button);
 
-	plugin->img_tray = gtk_image_new ();
-	gtk_container_add (GTK_CONTAINER (plugin->button), plugin->img_tray);
-	gtk_widget_show (plugin->img_tray);
-
-	gtk_image_set_from_icon_name (GTK_IMAGE (plugin->img_tray), "user-plugin-symbolic", GTK_ICON_SIZE_BUTTON);
-	gtk_image_set_pixel_size (GTK_IMAGE (plugin->img_tray), 22);
+	g_timeout_add (200, (GSourceFunc)lazy_load_image, plugin);
 
 	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);
 }
