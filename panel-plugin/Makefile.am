@@ -8,21 +8,10 @@ plugindir = $(libdir)/xfce4/panel/plugins
 plugin_LTLIBRARIES = \
 	libuser-plugin.la
 
-BUILT_SOURCES = \
-	user-window-resources.c \
-	user-window-resources.h
-
 libuser_plugin_la_SOURCES = \
 	user-plugin.h \
 	user-plugin.c \
-	$(BUILT_SOURCES) \
 	$(NULL)
-
-resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/gresource.xml)
-user-window-resources.c: gresource.xml $(resource_files)
-	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name user_window $<
-user-window-resources.h: gresource.xml $(resource_files)
-	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name user_window $<
 
 libuser_plugin_la_CFLAGS = \
 	$(GLIB_CFLAGS) \
@@ -33,13 +22,6 @@ libuser_plugin_la_CFLAGS = \
 	$(ACCOUNTSSERVICE_CFLAGS) \
 	$(PLATFORM_CFLAGS)
 
-libuser_plugin_la_LDFLAGS = \
-	-avoid-version \
-	-module \
-	-no-undefined \
-	-export-symbols-regex '^xfce_panel_module_(preinit|init|construct)' \
-	$(PLATFORM_LDFLAGS)
-
 libuser_plugin_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(GTK_LIBS) \
@@ -47,6 +29,14 @@ libuser_plugin_la_LIBADD = \
 	$(LIBXFCE4UI_LIBS) \
 	$(LIBXFCE4PANEL_LIBS) \
 	$(ACCOUNTSSERVICE_LIBS)
+
+libuser_plugin_la_LDFLAGS = \
+	-avoid-version \
+	-module \
+	-no-undefined \
+	-export-symbols-regex '^xfce_panel_module_(preinit|init|construct)' \
+	$(PLATFORM_LDFLAGS)
+
 
 #
 # Desktop file

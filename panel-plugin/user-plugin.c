@@ -24,20 +24,22 @@
 #endif
 
 #include "user-plugin.h"
-#include "user-window-resources.h"
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
+
 #include <glib-object.h>
 #include <libxfce4ui/libxfce4ui.h>
 #include <libxfce4util/libxfce4util.h>
 #include <libxfce4panel/xfce-panel-plugin.h>
+
 #include <act/act.h>
 
 
-
 #define DEFAULT_USER_IMAGE_SIZE (32)
+#define PANEL_TRAY_ICON_SIZE    (22)
 
-#define GET_WIDGET(builder, x) GTK_WIDGET (gtk_builder_get_object (builder, x))
+
 
 struct _UserPluginClass
 {
@@ -50,15 +52,12 @@ struct _UserPlugin
 	XfcePanelPlugin      __parent__;
 
 	GtkWidget       *button;
-	GtkWidget       *img_tray;
 	GtkWidget       *popup_window;
 	GtkWidget       *popup_lbl_user;
 	GtkWidget       *popup_img_user;
 
 	ActUserManager  *um;
 	ActUser         *user;
-
-	GtkBuilder      *builder;
 };
 
 typedef enum {
@@ -70,20 +69,24 @@ typedef enum {
 typedef struct {
   ActionType   type;
   const gchar *widget_name;
+  const gchar *icon_name;
   const gchar *display_name;
 } ActionEntry;
 
 static ActionEntry action_entries[] = {
   { ACTION_TYPE_SETTINGS,
     "box-settings",
+	"system-run-symbolic",
     N_("System Settings")
   },
   { ACTION_TYPE_LOCK_SCREEN,
     "box-lock-screen",
+	"system-lock-screen-symbolic",
     N_("Lock Screen")
   },
   { ACTION_TYPE_SHUTDOWN,
     "box-shutdown",
+	"system-shutdown-symbolic",
     N_("System Shutdown")
   }
 };
@@ -156,13 +159,11 @@ allowed_actions_type_get (void)
 }
 
 static void
-on_row_activated (GtkListBox *listbox, GtkListBoxRow *row)
+on_action_item_clicked (GtkButton *button, gpointer data)
 {
-	GError        *error = NULL;
-	gboolean       succeed = FALSE;
-	gint           action;
-
-	action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "action"));
+	GError   *error   = NULL;
+	gboolean  succeed = FALSE;
+	gint      action  = GPOINTER_TO_INT (data);
 
 	switch (action)
 	{
@@ -184,8 +185,8 @@ on_row_activated (GtkListBox *listbox, GtkListBoxRow *row)
 
 	if (!succeed) {
 		xfce_dialog_show_error (NULL, error,
-								_("Failed to run action \"%s\""),
-								action_entries[action].display_name);
+                                _("Failed to run action \"%s\""),
+                                action_entries[action].display_name);
 	}
 }
 
@@ -194,11 +195,13 @@ on_popup_window_closed (gpointer data)
 {
 	UserPlugin *plugin = USER_PLUGIN (data);
 
-	gtk_widget_destroy (plugin->popup_window);
+	if (plugin->popup_window != NULL) {
+		gtk_widget_destroy (plugin->popup_window);
 
-	plugin->popup_window = NULL;
-	plugin->popup_lbl_user = NULL;
-	plugin->popup_img_user = NULL;
+		plugin->popup_window = NULL;
+		plugin->popup_lbl_user = NULL;
+		plugin->popup_img_user = NULL;
+    }
 
 	xfce_panel_plugin_block_autohide (XFCE_PANEL_PLUGIN (plugin), FALSE);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (plugin->button), FALSE);
@@ -209,7 +212,7 @@ on_popup_window_closed (gpointer data)
 static gboolean
 on_popup_key_press_event (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event->type == GDK_KEY_PRESS && event->keyval == GDK_KEY_Escape) {
+	if (event->type == GDK_KEY_PRESS && event->keyval == GDK_Escape) {
 		on_popup_window_closed (data);
 		return TRUE;
 	}
@@ -275,24 +278,36 @@ on_popup_window_realized (GtkWidget *widget, gpointer data)
 }
 
 static GtkWidget *
-popup_user_window (UserPlugin *plugin)
+item_button_new (const gchar *icon_name, const gchar *text)
 {
-	gint      i;
-	GError    *error = NULL;
-	GdkScreen *screen;
+	GtkWidget *button = gtk_button_new ();
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_widget_set_can_focus (button, FALSE);
+	gtk_widget_set_name (button, "gooroom-user-plugin-item-button");
+
+	GtkWidget *hbox = gtk_hbox_new (FALSE, 96);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 2);
+	gtk_container_add (GTK_CONTAINER (button), hbox);
+	gtk_widget_show (hbox);
+
+	GtkWidget *icon = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 5);
+	gtk_widget_show (icon);
+
+	GtkWidget *label = gtk_label_new (_(text));
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
+	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 5);
+	gtk_widget_show (label);
+
+	return button;
+}
+
+static GtkWidget *
+popup_user_window (UserPlugin *plugin, GdkEventButton *event)
+{
 	GtkWidget *window;
-	GtkWidget *btn_user;
-	GtkWidget *listbox;
-	ActionType allowed_types;
-	gboolean   loaded = FALSE;
 
-    gtk_builder_add_from_resource (plugin->builder, "/kr/gooroom/user/plugin/user-window.ui", NULL);
-	if (error) {
-		g_error_free (error);
-		return NULL;
-	}
-
-	window = GET_WIDGET (plugin->builder, "user-window");
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
 	gtk_window_set_decorated (GTK_WINDOW (window), FALSE);
 	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
@@ -300,46 +315,76 @@ popup_user_window (UserPlugin *plugin)
 	gtk_window_set_skip_pager_hint(GTK_WINDOW (window), TRUE);
 	gtk_window_set_keep_above (GTK_WINDOW (window), TRUE);
 	gtk_window_stick(GTK_WINDOW (window));
+	gtk_window_set_screen (GTK_WINDOW (window), gtk_widget_get_screen (GTK_WIDGET (plugin)));
 
-	screen = gtk_widget_get_screen (GTK_WIDGET (plugin->button));
-	gtk_window_set_screen (GTK_WINDOW (window), screen);
+	GtkWidget *main_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (window), main_vbox);
+	gtk_widget_show (main_vbox);
 
-	g_signal_connect (G_OBJECT (window), "realize", G_CALLBACK (on_popup_window_realized), plugin);
-	g_signal_connect_swapped (G_OBJECT (window), "delete-event", G_CALLBACK (on_popup_window_closed), plugin);
-	g_signal_connect (G_OBJECT (window), "key-press-event", G_CALLBACK (on_popup_key_press_event), plugin);
-	g_signal_connect_swapped (G_OBJECT (window), "focus-out-event", G_CALLBACK (on_popup_window_closed), plugin);
+	GtkWidget *ebox = gtk_event_box_new ();
+	gtk_widget_set_name (ebox, "panel-popup-window-frame");
+	gtk_box_pack_start (GTK_BOX (main_vbox), ebox, FALSE, FALSE, 0);
+	gtk_widget_show (ebox);
 
-	listbox = GET_WIDGET (plugin->builder, "listbox");
-	btn_user = GET_WIDGET (plugin->builder, "btn-user");
-	plugin->popup_lbl_user = GET_WIDGET (plugin->builder, "lbl-user");
-	plugin->popup_img_user = GET_WIDGET (plugin->builder, "img-user");
+	GtkWidget *hbox = gtk_hbox_new (FALSE, 9);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	gtk_container_add (GTK_CONTAINER (ebox), hbox);
+	gtk_widget_show (hbox);
 
+	GtkWidget *button = gtk_button_new ();
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_widget_set_can_focus (button, FALSE);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	gtk_widget_show (button);
+
+	plugin->popup_img_user = gtk_image_new_from_icon_name ("avatar-default-symbolic", GTK_ICON_SIZE_DND);
+	gtk_container_add (GTK_CONTAINER (button), plugin->popup_img_user);
+	gtk_widget_show (plugin->popup_img_user);
+
+	plugin->popup_lbl_user = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (plugin->popup_lbl_user), "<b>Guest</b>");
+	gtk_box_pack_start (GTK_BOX (hbox), plugin->popup_lbl_user, FALSE, TRUE, 0);
+	gtk_widget_show (plugin->popup_lbl_user);
+
+	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (on_user_face_button_clicked), plugin);
+
+	GtkWidget *item_box = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (item_box), 0);
+	gtk_container_add (GTK_CONTAINER (main_vbox), item_box);
+	gtk_widget_show (item_box);
+
+	gboolean loaded = FALSE;
 	g_object_get (plugin->um, "is-loaded", &loaded, NULL);
 	if (loaded)
 		user_info_update (plugin->um, NULL, plugin);
 	else
 		g_signal_connect (plugin->um, "notify::is-loaded", G_CALLBACK (user_info_update), plugin);
 
-	allowed_types = allowed_actions_type_get ();
+	ActionType allowed_types = allowed_actions_type_get ();
 
+	guint i;
 	for (i = 0; i < G_N_ELEMENTS (action_entries); i++) {
-		GtkWidget *w = GET_WIDGET (plugin->builder, action_entries[i].widget_name);
-		if (w && (allowed_types & action_entries[i].type)) {
-			GtkWidget *row = gtk_list_box_row_new (); 
-			gtk_container_add (GTK_CONTAINER (row), w);
-			gtk_container_add (GTK_CONTAINER (listbox), GTK_WIDGET (row));
-			gtk_widget_show_all (row);
-			g_object_set_data (G_OBJECT (row), "action", GINT_TO_POINTER (action_entries[i].type));
+		if (allowed_types & action_entries[i].type) {
+			GtkWidget *item = item_button_new (action_entries[i].icon_name, action_entries[i].display_name);
+			gtk_box_pack_start (GTK_BOX (item_box), item, FALSE, FALSE, 0);
+			gtk_widget_show_all (item);
+			g_signal_connect (G_OBJECT (item), "clicked",
+                              G_CALLBACK (on_action_item_clicked),
+                              GINT_TO_POINTER (action_entries[i].type));
 		}
 	}
 
-	g_signal_connect (G_OBJECT (listbox), "row-activated", G_CALLBACK (on_row_activated), NULL);
-	g_signal_connect (G_OBJECT (btn_user), "clicked", G_CALLBACK (on_user_face_button_clicked), plugin);
+	g_signal_connect (G_OBJECT (window), "realize", G_CALLBACK (on_popup_window_realized), plugin);
+	g_signal_connect_swapped (G_OBJECT (window), "delete-event", G_CALLBACK (on_popup_window_closed), plugin);
+	g_signal_connect (G_OBJECT (window), "key-press-event", G_CALLBACK (on_popup_key_press_event), plugin);
+	g_signal_connect_swapped (G_OBJECT (window), "focus-out-event", G_CALLBACK (on_popup_window_closed), plugin);
+
+	gtk_widget_set_size_request (window, 192, -1);
+
+	gtk_widget_show_all (window);
 
 	xfce_panel_plugin_block_autohide (XFCE_PANEL_PLUGIN (plugin), TRUE);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (plugin->button), TRUE);
-
-	gtk_widget_show (window);
 
 	return window;
 }
@@ -354,7 +399,7 @@ on_user_button_pressed (GtkWidget *widget, GdkEventButton *event, gpointer data)
 			if (plugin->popup_window != NULL) {
 				on_popup_window_closed (plugin);
 			} else {
-				plugin->popup_window = popup_user_window (plugin);
+				plugin->popup_window = popup_user_window (plugin, event);
 			}
 
 			return TRUE;
@@ -365,26 +410,13 @@ on_user_button_pressed (GtkWidget *widget, GdkEventButton *event, gpointer data)
 	return (*GTK_WIDGET_CLASS (user_plugin_parent_class)->button_press_event) (GTK_WIDGET (plugin), event);
 }
 
-static gboolean
-lazy_load_image (gpointer data)
-{
-	UserPlugin *plugin = USER_PLUGIN (data);
-
-	plugin->img_tray = gtk_image_new_from_icon_name ("user-plugin-symbolic", GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_container_add (GTK_CONTAINER (plugin->button), plugin->img_tray);
-	gtk_widget_show (plugin->img_tray);
-
-	return FALSE;
-}
-
+#if 0
 static void
 user_plugin_free_data (XfcePanelPlugin *panel_plugin)
 {
 	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
-
-	if (plugin->builder)
-		g_object_unref (plugin->builder);
 }
+#endif
 
 static gboolean
 user_plugin_size_changed (XfcePanelPlugin *panel_plugin,
@@ -411,38 +443,38 @@ user_plugin_mode_changed (XfcePanelPlugin *plugin, XfcePanelPluginMode mode)
 static void
 user_plugin_init (UserPlugin *plugin)
 {
-	GError *error        = NULL;
-
 	plugin->user         = NULL;
 	plugin->button       = NULL;
-	plugin->img_tray     = NULL;
 	plugin->um           = NULL;
 
-	g_resources_register (user_window_get_resource ());
+	plugin->button = xfce_panel_create_toggle_button ();
+	xfce_panel_plugin_add_action_widget (XFCE_PANEL_PLUGIN (plugin), plugin->button);
+	gtk_container_add (GTK_CONTAINER (plugin), plugin->button);
 
-	plugin->um = act_user_manager_get_default ();
+	GdkPixbuf *pix;
+	pix = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+                                    "user-plugin-symbolic", PANEL_TRAY_ICON_SIZE,
+                                    GTK_ICON_LOOKUP_FORCE_SIZE, NULL);
 
-	plugin->builder = gtk_builder_new ();
+	if (pix) {
+		GtkWidget *tray = gtk_image_new_from_pixbuf (pix);
+		gtk_container_add (GTK_CONTAINER (plugin->button), tray);
+		g_object_unref (G_OBJECT (pix));
+	}
+
+	gtk_widget_show_all (plugin->button);
+
+	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);
 }
 
 static void
 user_plugin_construct (XfcePanelPlugin *panel_plugin)
 {
-	gboolean loaded = FALSE;
-
 	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
 
 	xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
 
-	plugin->button = xfce_panel_create_toggle_button ();
-	gtk_button_set_relief (GTK_BUTTON (plugin->button), GTK_RELIEF_NONE);
-	gtk_container_add (GTK_CONTAINER (plugin), plugin->button);
-	xfce_panel_plugin_add_action_widget (XFCE_PANEL_PLUGIN (plugin), plugin->button);
-	gtk_widget_show (plugin->button);
-
-	g_timeout_add (200, (GSourceFunc)lazy_load_image, plugin);
-
-	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);
+	plugin->um = act_user_manager_get_default ();
 }
 
 static void
@@ -452,7 +484,7 @@ user_plugin_class_init (UserPluginClass *klass)
 
 	plugin_class = XFCE_PANEL_PLUGIN_CLASS (klass);
 	plugin_class->construct = user_plugin_construct;
-	plugin_class->free_data = user_plugin_free_data;
+//	plugin_class->free_data = user_plugin_free_data;
 	plugin_class->size_changed = user_plugin_size_changed;
 	plugin_class->mode_changed = user_plugin_mode_changed;
 }

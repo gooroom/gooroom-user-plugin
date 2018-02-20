@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gresources>
-  <gresource prefix="/kr/gooroom/user/plugin">
-    <file preprocess="xml-stripblanks">user-window.ui</file>
-  </gresource>
-</gresources>
