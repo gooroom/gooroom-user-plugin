@@ -37,7 +37,7 @@
 
 
 #define DEFAULT_USER_IMAGE_SIZE (32)
-#define PANEL_TRAY_ICON_SIZE    (22)
+#define PANEL_TRAY_ICON_SIZE    (16)
 
 
 
@@ -410,13 +410,17 @@ on_user_button_pressed (GtkWidget *widget, GdkEventButton *event, gpointer data)
 	return (*GTK_WIDGET_CLASS (user_plugin_parent_class)->button_press_event) (GTK_WIDGET (plugin), event);
 }
 
-#if 0
-static void
-user_plugin_free_data (XfcePanelPlugin *panel_plugin)
+static gboolean
+update_ui (gpointer data)
 {
-	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
+	UserPlugin *plugin = USER_PLUGIN (data);
+
+	plugin->um = act_user_manager_get_default ();
+
+	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);
+
+	return FALSE;
 }
-#endif
 
 static gboolean
 user_plugin_size_changed (XfcePanelPlugin *panel_plugin,
@@ -447,6 +451,8 @@ user_plugin_init (UserPlugin *plugin)
 	plugin->button       = NULL;
 	plugin->um           = NULL;
 
+	xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
+
 	plugin->button = xfce_panel_create_toggle_button ();
 	xfce_panel_plugin_add_action_widget (XFCE_PANEL_PLUGIN (plugin), plugin->button);
 	gtk_container_add (GTK_CONTAINER (plugin), plugin->button);
@@ -464,17 +470,7 @@ user_plugin_init (UserPlugin *plugin)
 
 	gtk_widget_show_all (plugin->button);
 
-	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);
-}
-
-static void
-user_plugin_construct (XfcePanelPlugin *panel_plugin)
-{
-	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
-
-	xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
-
-	plugin->um = act_user_manager_get_default ();
+	g_timeout_add (500, (GSourceFunc) update_ui, plugin);
 }
 
 static void
@@ -483,8 +479,6 @@ user_plugin_class_init (UserPluginClass *klass)
 	XfcePanelPluginClass *plugin_class;
 
 	plugin_class = XFCE_PANEL_PLUGIN_CLASS (klass);
-	plugin_class->construct = user_plugin_construct;
-//	plugin_class->free_data = user_plugin_free_data;
 	plugin_class->size_changed = user_plugin_size_changed;
 	plugin_class->mode_changed = user_plugin_mode_changed;
 }
