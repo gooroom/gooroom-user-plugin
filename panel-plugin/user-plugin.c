@@ -303,7 +303,7 @@ item_button_new (const gchar *icon_name, const gchar *text)
 }
 
 static GtkWidget *
-popup_user_window (UserPlugin *plugin, GdkEventButton *event)
+popup_window_new (UserPlugin *plugin, GdkEventButton *event)
 {
 	GtkWidget *window;
 
@@ -390,7 +390,7 @@ popup_user_window (UserPlugin *plugin, GdkEventButton *event)
 }
 
 static gboolean
-on_user_button_pressed (GtkWidget *widget, GdkEventButton *event, gpointer data)
+on_plugin_button_pressed (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	UserPlugin *plugin = USER_PLUGIN (data);
 
@@ -399,7 +399,7 @@ on_user_button_pressed (GtkWidget *widget, GdkEventButton *event, gpointer data)
 			if (plugin->popup_window != NULL) {
 				on_popup_window_closed (plugin);
 			} else {
-				plugin->popup_window = popup_user_window (plugin, event);
+				plugin->popup_window = popup_window_new (plugin, event);
 			}
 
 			return TRUE;
@@ -417,9 +417,18 @@ update_ui (gpointer data)
 
 	plugin->um = act_user_manager_get_default ();
 
-	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_user_button_pressed), plugin);
+	g_signal_connect (G_OBJECT (plugin->button), "button-press-event", G_CALLBACK (on_plugin_button_pressed), plugin);
 
 	return FALSE;
+}
+
+static void
+user_plugin_free_data (XfcePanelPlugin *panel_plugin)
+{
+	UserPlugin *plugin = USER_PLUGIN (panel_plugin);
+
+	if (plugin->popup_window != NULL)
+		on_popup_window_closed (plugin);
 }
 
 static gboolean
@@ -459,11 +468,13 @@ user_plugin_init (UserPlugin *plugin)
 
 	GdkPixbuf *pix;
 	pix = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                    "user-plugin-symbolic", PANEL_TRAY_ICON_SIZE,
+                                    "user-plugin-panel",
+                                    PANEL_TRAY_ICON_SIZE,
                                     GTK_ICON_LOOKUP_FORCE_SIZE, NULL);
 
 	if (pix) {
 		GtkWidget *tray = gtk_image_new_from_pixbuf (pix);
+		gtk_image_set_pixel_size (GTK_IMAGE (tray), PANEL_TRAY_ICON_SIZE);
 		gtk_container_add (GTK_CONTAINER (plugin->button), tray);
 		g_object_unref (G_OBJECT (pix));
 	}
@@ -479,6 +490,7 @@ user_plugin_class_init (UserPluginClass *klass)
 	XfcePanelPluginClass *plugin_class;
 
 	plugin_class = XFCE_PANEL_PLUGIN_CLASS (klass);
+	plugin_class->free_data = user_plugin_free_data;
 	plugin_class->size_changed = user_plugin_size_changed;
 	plugin_class->mode_changed = user_plugin_mode_changed;
 }
