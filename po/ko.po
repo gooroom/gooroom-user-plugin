@@ -1,14 +1,14 @@
 # Korean translations for gooroom-user-plugin package.
-# Copyright (C) 2016 THE gooroom-user-plugin'S COPYRIGHT HOLDER
+# Copyright (C) 2015-2019 THE gooroom-user-plugin'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gooroom-user-plugin package.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gooroom-user-plugin 0.1.0\n"
+"Project-Id-Version: gooroom-user-plugin 0.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-21 18:43+0900\n"
+"POT-Creation-Date: 2019-10-22 00:28+0900\n"
 "PO-Revision-Date: 2016-09-21 18:43+0900\n"
-"Language-Team: Korean\n"
+"Language-Team: Gooroom <gooroom@gooroom.kr>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,35 +23,27 @@ msgstr "사용자 Action 플러그인"
 msgid "Log out, lock or other user actions"
 msgstr "로그아웃 및 화면잠금 등 사용자 Action 플러그인"
 
-#: ../panel-plugin/user-plugin.c:208
+#: ../panel-plugin/user-plugin.c:82
+msgid "System Settings"
+msgstr "시스템 설정"
+
+#: ../panel-plugin/user-plugin.c:87
+msgid "Lock Screen"
+msgstr "화면 잠금"
+
+#: ../panel-plugin/user-plugin.c:92
+msgid "System Shutdown"
+msgstr "시스템 종료"
+
+#: ../panel-plugin/user-plugin.c:190
 #, c-format
 msgid "Failed to run action \"%s\""
 msgstr "\"%s\" 명령을 실행할 수 없습니다."
 
-#: ../panel-plugin/user-plugin.c:251
+#: ../panel-plugin/user-plugin.c:235
 msgid "_Cancel"
 msgstr "취소"
 
-#: ../panel-plugin/user-plugin.c:253
+#: ../panel-plugin/user-plugin.c:237
 msgid "_Open"
 msgstr "열기"
-
-#: ../panel-plugin/user-window.ui.h:1
-msgid "Guest"
-msgstr "손님"
-
-#: ../panel-plugin/user-window.ui.h:2
-msgid "System Settings"
-msgstr "시스템 설정"
-
-#: ../panel-plugin/user-window.ui.h:3
-msgid "Switch User"
-msgstr "사용자 바꾸기"
-
-#: ../panel-plugin/user-window.ui.h:4
-msgid "Lock Screen"
-msgstr "화면 잠금"
-
-#: ../panel-plugin/user-window.ui.h:5
-msgid "System Shutdown"
-msgstr "시스템 종료"
