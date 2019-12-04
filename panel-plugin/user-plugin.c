@@ -39,7 +39,7 @@
 
 
 #define DEFAULT_USER_IMAGE_SIZE (32)
-#define PANEL_TRAY_ICON_SIZE    (16)
+#define PANEL_TRAY_ICON_SIZE    (24)
 
 
 
